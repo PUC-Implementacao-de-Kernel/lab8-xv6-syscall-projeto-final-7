@@ -8,8 +8,29 @@
 #include "defs.h"
 
 // list to print in syscall()
-const char syscall_names[] = { "fork", "exit", "wait", "pipe", "read", "kill", "exec", "fstat", "chdir", "dup", 
-	"getpid", "sbrk", "pause", "uptime", "open", "write", "mknod", "unlink", "link", "mkdir", "close", "trace"
+const char *syscall_names[] = {
+ [SYS_fork]    = "fork",
+ [SYS_exit]    = "exit",
+ [SYS_wait]    = "wait",
+ [SYS_pipe]    = "pipe",
+ [SYS_read]    = "read",
+ [SYS_kill]    = "kill",
+ [SYS_exec]    = "exec",
+ [SYS_fstat]   = "fstat",
+ [SYS_chdir]   = "chdir",
+ [SYS_dup]     = "dup",
+ [SYS_getpid]  = "getpid",
+ [SYS_sbrk]    = "sbrk",
+ [SYS_pause]   = "pause",
+ [SYS_uptime]  = "uptime",
+ [SYS_open]    = "open",
+ [SYS_write]   = "write",
+ [SYS_mknod]   = "mknod",
+ [SYS_unlink]  = "unlink",
+ [SYS_link]    = "link",
+ [SYS_mkdir]   = "mkdir",
+ [SYS_close]   = "close",
+ [SYS_trace]   = "trace",
 };
     
 // Fetch the uint64 at addr from the current process.
@@ -148,8 +169,8 @@ syscall(void)
     p->trapframe->a0 = syscalls[num]();
 
     //print for the trace_mask test
-    if(p->trace_mask != 0){
-      printf("%d: syscall %s -> %d", p->pid, syscall_names[num], p->trapframe->a0);
+    if(p->trace_mask & (1 << num)){
+      printf("%d: syscall %s -> %d\n", p->pid, syscall_names[num], (int)p->trapframe->a0);
     }
 
   } else {
